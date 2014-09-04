@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=gbk" />
+<script type="text/javascript" src="lib/dalisi.js" charset="GBK"></script>
+<title>将弹出式窗口的资料输入到主窗口中</title>
+<script language="javascript">
+<!--
+function openUrl(){
+	debugger;
+	var retObj = window.showModalDialog("b.html",window,"width=300,height=200");
+	if(retObj!=null){
+		document.getElementById('txt').value =retObj;
+	}
+}
+//-->
+</script>
+</head>
+<body>
+接受弹出式窗口的资料
+<input onclick="openUrl()" type="text" id="txt">
+<br>
+<input type="text" id="txt2">
+<br>
+<iframe id="c_html" src="c.html" frameborder="1" scrolling="no" ></iframe>
+</body>
+</html>

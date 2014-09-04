@@ -1,0 +1,43 @@
+body {
+    background: #333;
+    color: #fff;
+    font: 300 100.1% "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+}
+#holder {
+    height: 480px;
+    left: 50%;
+    margin: -240px 0 0 -320px;
+    position: absolute;
+    top: 50%;
+    width: 640px;
+}
+#processholder {
+    height: 480px;
+    margin: -240px 0 0 0;
+    position: absolute;
+    width: 640px;
+    -moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	border: solid 1px #fff;
+}
+#leftmenu {
+    height: 480px;
+    left: 10px;
+    background: #fff;
+    position: absolute;
+    top: 200px;
+    width: 100px;
+}
+#copy {
+    bottom: 0;
+    font: 300 .7em "Helvetica Neue", Helvetica, "Arial Unicode MS", Arial, sans-serif;
+    position: absolute;
+    right: 1em;
+    text-align: right;
+}
+#copy a {
+    color: #fff;
+}
+p {
+	text-align: center;
+}

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="GB2312"?>
+
+<workflow label="简单业务变更" tasktype="process" tasktag="com.asiainfo.crm.so.vm.rboss.prodchange.OrdOfferDispatchSimple">
+  <vars name="_TASK_JUGE_RESULT" datatype="java.lang.String" inouttype="inner" description="判断节点结果"/>
+  <vars name="customerOrderId" datatype="long" inouttype="in"/>
+  <vars name="aOVOrderCustomer" datatype="com.ai.omframe.order.ivalues.IOVOrderCustomer" defaultvalue="" inouttype="inner"/>
+  <vars name="REGION_ID" datatype="java.lang.String" inouttype="in" description=""/>
+  <vars name="aSoOrderData" datatype="com.ai.omframe.order.data.ivalues.ISoOrderData" defaultvalue="" inouttype="inner"/>
+  <vars name="ktBusinessId" datatype="long" defaultvalue="999910010006L" inouttype="inner"/>
+  <task id="1" label="开始" tasktype="start" isstart="true">
+    <uiinfo>282,44,80,25</uiinfo>
+    <gotoitem goto="2"/>
+    <autodeal>
+      <runtype/>
+      <servicename/>
+      <runclassname/>
+      <runfunctionname/>
+    </autodeal>
+  </task>
+  <task id="2" label="策划操作分发" tasktype="auto" tasktag="OFFER_OPER_DISPATCH">
+    <uiinfo>271,92,102,25</uiinfo>
+    <gotoitem goto="13"/>
+    <autodeal>
+      <runtype>service</runtype>
+      <servicename>com.asiainfo.crm.so.order.rboss.service.interfaces.IPrjOrderVmHelperSV</servicename>
+      <runclassname>com.asiainfo.crm.so.order.rboss.service.interfaces.IPrjOrderVmHelperSV</runclassname>
+      <runfunctionname>invokeOfferOperDispatch</runfunctionname>
+      <vars name="P_0" datatype="long" contextvarName="customerOrderId" defaultvalue="" inouttype="in" description=""/>
+      <vars name="return" datatype="com.ai.omframe.order.ivalues.IOVOrderCustomer" contextvarName="aOVOrderCustomer" defaultvalue="" inouttype="return" description=""/>
+    </autodeal>
+  </task>
+  <task id="4" label="结束" tasktype="finish">
+    <uiinfo>285,374,80,25</uiinfo>
+    <autodeal>
+      <runtype/>
+      <servicename/>
+      <runclassname/>
+      <runfunctionname/>
+    </autodeal>
+  </task>
+  <task id="7" label="转实例" tasktype="childworkflow" tasktag="TRANS_INS">
+    <uiinfo>284,281,80,25</uiinfo>
+    <gotoitem goto="11"/>
+    <child code="com.asiainfo.crm.so.vm.common.OrdTransIns" name="转实例" type="process">
+      <vars name="aOVOrderCustomer" datatype="com.ai.omframe.order.ivalues.IOVOrderCustomer" contextvarName="aOVOrderCustomer" inouttype="inout"/>
+      <vars name="REGION_ID" datatype="java.lang.String" contextvarName="REGION_ID" inouttype="in"/>
+      <vars name="FLOWOBJECT_TYPE" datatype="String" inouttype="in" description="子流程模板编码"/>
+      <vars name="FLOWOBJECT_TYPE" datatype="String" inouttype="in" description="子流程的业务对象类型"/>
+      <vars name="FLOWOBJECT_ID" datatype="String" contextvarName="customerOrderId" inouttype="in" description="子流程的业务对象编号"/>
+      <vars name="CREATE_STAFF" datatype="String" inouttype="in" description="流程创建人员"/>
+    </child>
+  </task>
+  <task id="11" label="订单竣工" tasktype="auto" tasktag="auto">
+    <uiinfo>272,328,106,25</uiinfo>
+    <gotoitem goto="4"/>
+    <autodeal>
+      <runtype>service</runtype>
+      <servicename>com.ai.omframe.teaminvoke.service.interfaces.IOMWorkflowCommonSV</servicename>
+      <runclassname>com.ai.omframe.teaminvoke.service.interfaces.IOMWorkflowCommonSV</runclassname>
+      <runfunctionname>saveOVOrdCustToFinish</runfunctionname>
+      <vars name="P_0" datatype="com.ai.omframe.order.ivalues.IOVOrderCustomer" contextvarName="aOVOrderCustomer" defaultvalue="" inouttype="in" description=""/>
+      <vars name="return" datatype="void" contextvarName="" defaultvalue="" inouttype="return" description=""/>
+    </autodeal>
+  </task>
+  <task id="6" label="营业送开通接口" tasktype="auto" tasktag="SEND_TO_OPEN">
+    <uiinfo>274,189,100,25</uiinfo>
+    <gotoitem goto="14"/>
+    <autodeal>
+      <runtype>service</runtype>
+      <servicename>com.asiainfo.crm.so.teaminvoke.in.service.interfaces.IOpen2CrmSV</servicename>
+      <runclassname>com.asiainfo.crm.so.teaminvoke.in.service.interfaces.IOpen2CrmSV</runclassname>
+      <runfunctionname>sendOrderInfoToOpen</runfunctionname>
+      <vars name="P_0" datatype="com.ai.omframe.order.ivalues.IOVOrderCustomer" contextvarName="aOVOrderCustomer" defaultvalue="" inouttype="in" description=""/>
+      <vars name="return" datatype="void" contextvarName="" defaultvalue="" inouttype="return" description=""/>
+    </autodeal>
+  </task>
+  <task id="13" label="修改开通业务操作ID" tasktype="auto" tasktag="">
+    <uiinfo>251,138,144,24</uiinfo>
+    <gotoitem goto="6"/>
+    <autodeal>
+      <runtype>service</runtype>
+      <servicename>com.asiainfo.sh.so.teaminvoke.out.service.interfaces.ISHCrm2InterPubSV</servicename>
+      <runclassname>com.asiainfo.sh.so.teaminvoke.out.service.interfaces.ISHCrm2InterPubSV</runclassname>
+      <runfunctionname>modifyOrderCustomer4KT</runfunctionname>
+      <vars name="P_0" datatype="com.ai.omframe.order.ivalues.IOVOrderCustomer" contextvarName="aOVOrderCustomer" defaultvalue="" inouttype="in" description=""/>
+      <vars name="P_1" datatype="long" contextvarName="ktBusinessId" defaultvalue="" inouttype="in" description=""/>
+      <vars name="return" datatype="long" contextvarName="ktBusinessId" defaultvalue="" inouttype="return" description=""/>
+    </autodeal>
+  </task>
+  <task id="14" label="改回开通业务操作ID" tasktype="auto" tasktag="">
+    <uiinfo>256,233,138,25</uiinfo>
+    <gotoitem goto="7"/>
+    <autodeal>
+      <runtype>service</runtype>
+      <servicename>com.asiainfo.sh.so.teaminvoke.out.service.interfaces.ISHCrm2InterPubSV</servicename>
+      <runclassname>com.asiainfo.sh.so.teaminvoke.out.service.interfaces.ISHCrm2InterPubSV</runclassname>
+      <runfunctionname>modifyOrderCustomer4KT</runfunctionname>
+      <vars name="P_0" datatype="com.ai.omframe.order.ivalues.IOVOrderCustomer" contextvarName="aOVOrderCustomer" defaultvalue="" inouttype="in" description=""/>
+      <vars name="P_1" datatype="long" contextvarName="ktBusinessId" defaultvalue="" inouttype="in" description=""/>
+      <vars name="return" datatype="long" contextvarName="ktBusinessId" defaultvalue="" inouttype="return" description=""/>
+    </autodeal>
+  </task>
+  <join taska="1" taskb="2">
+    <uiinfo>10.0,10.0,500,500,322,56,322,92</uiinfo>
+  </join>
+  <join taska="11" taskb="4">
+    <uiinfo>10.0,10.0,500,500,325,340,325,374</uiinfo>
+  </join>
+  <join taska="7" taskb="11">
+    <uiinfo>10.0,10.0,500,500,324,293,325,328</uiinfo>
+  </join>
+  <join taska="2" taskb="13">
+    <uiinfo>10.0,10.0,500,500,322,104,323,138</uiinfo>
+  </join>
+  <join taska="13" taskb="6">
+    <uiinfo>10.0,10.0,500,500,323,150,324,189</uiinfo>
+  </join>
+  <join taska="6" taskb="14">
+    <uiinfo>10.0,10.0,500,500,324,201,325,233</uiinfo>
+  </join>
+  <join taska="14" taskb="7">
+    <uiinfo>10.0,10.0,500,500,325,245,324,281</uiinfo>
+  </join>
+</workflow>

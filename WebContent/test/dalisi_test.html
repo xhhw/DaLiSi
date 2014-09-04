@@ -1,0 +1,216 @@
+<html>
+<head>
+<script type="text/javascript" charset="utf-8">
+/*!
+ * Dalisi JavaScript Library v1.0.0
+ * http://xxxxxxxxxxx.com/
+ *
+ * Copyright 2014, ZhangBin
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://xxxxxxxxxxx.org/license
+ *
+ * Date: 2014-01-01 08:21:08
+ */
+(function (glob){
+	function D(){
+		
+	}
+	D.version = "1.0.0";
+	var proto = "prototype",
+		g = {
+            doc: document,
+            win: window
+        };
+	
+	D.init = function(){
+		// Mozilla, Opera and webkit nightlies currently support this event
+		if ( document.addEventListener ) {
+			// Use the handy event callback
+			document.addEventListener( "DOMContentLoaded", DOMContentLoaded, false );
+			
+			// A fallback to window.onload, that will always work
+			window.addEventListener( "load", jQuery.ready, false );
+
+		// If IE event model is used
+		} else if ( document.attachEvent ) {
+			// ensure firing before onload,
+			// maybe late but safe also for iframes
+			document.attachEvent("onreadystatechange", DOMContentLoaded);
+			
+			// A fallback to window.onload, that will always work
+			window.attachEvent( "onload", jQuery.ready );
+
+			// If IE and not a frame
+			// continually check to see if the document is ready
+			var toplevel = false;
+
+			try {
+				toplevel = window.frameElement == null;
+			} catch(e) {}
+
+			if ( document.documentElement.doScroll && toplevel ) {
+				doScrollCheck();
+			}
+		}
+	}
+	
+	D.ready = function(fn){
+		
+	}
+	
+	_item = function(){
+		var pageUrl,elementId,event,funcId,pageType,pageParent;
+	}
+	//D.page = [];
+	var _page = function(){
+		debugger;
+		var _protocol = (("https:" == g.win.location.protocol) ? "https://" : "http://"); 
+		var _domain = "localhost:8020/jetty/";
+		//var _protocol = "file:///D:/";
+		//var _domain = "eclipse-jee-galileo-win32/myproject/workspace/jettyDemo/jetty/web/";
+		
+		var url = g.win.location.href;
+		if (url != undefined && url.lastIndexOf("file:") > 0){
+			var _protocol = "file:///D:/";
+			var _domain = "eclipse-jee-galileo-win32/myproject/workspace/jettyDemo/jetty/web/";
+		}
+		
+		if (url != undefined && url.lastIndexOf("/") != null){
+			var prefix = _protocol + _domain;
+			var pageUrl = url.substring(prefix.length);
+		}
+		return pageUrl;
+	}();
+	
+	g.win.onload = function(){
+		//alert("window.onload is called");
+		debugger;
+		var request = new XMLHttpRequest();
+		request.open("POST","http://localhost:8020/dalisi");
+		request.onreadystatechange = function(){
+			if(request.readyState === 4 && request.status === 200){
+				var type = request.getResponseHeader("Content-Type");
+				if (type.indexOf("xml") !== -1 && request.responseXML){
+					debugger;
+					registPageEventListener(request.responseXML);
+				}
+				else if (type === "application/json"){
+					alert(JSON.parse(request.responseText));
+				}
+				else {
+					alert(request.responseText);
+				}
+			}
+		};
+		request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		request.send("pageUrl="+_page);
+	}
+	
+	function registPageEventListener(xmldoc){
+		debugger;
+		//根据XML生成JS文件列表
+		var files = [];
+		var fileNodes = xmldoc.getElementsByTagName("file");
+		fileNodes.forEach(function(n){
+			files.push(n);
+		});
+		
+		//根据XML生成注册事件列表
+		var apps = [];
+		var appNodes = xmldoc.getElementsByTagName("page_app");
+		appNodes.forEach(function(n){
+			var a = {
+					pageUrl: n.getAttribute("pageUrl"),
+					elementId: n.getAttribute("elementId"),
+					event: n.getAttribute("event"),
+					funcId: n.getAttribute("funcId"),
+					pageType: n.getAttribute("pageType"),
+					pageParent: n.getAttribute("pageParent"),
+					funcName: n.getAttribute("funcName")
+			};
+			apps.push(a);
+		});
+		
+		//加载JS文件
+		includeJSfiles(files);
+		
+		//注册事件函数
+		registPageEvent(apps);
+	}
+	
+	function includeJSfiles(files){
+		debugger;
+		for (var i=0; i<files.length; i++){
+			var el = g.doc.createElement('script');
+			el.src = files[i];
+			el.type = 'text/javascript';
+			var head = g.doc.getElementsByTagName('head')[0];
+			head.appendChild(el);
+			while (!(el.readyState === "complete" || el.readyState === "loaded")){
+				sleep(5);
+			}
+		}
+	}
+	
+	function registPageEvent(apps){
+		debugger;
+		apps.forEach(function(app){
+			var tmpEl = g.doc.getElementById(app.elementId);
+			if (tmpEl.attachEvent){
+				tmpEl.attachEvent("onclick",app.funcName,false);
+			}else{
+				tmpEl.addEventListener("click",app.funcName,false);
+			}
+		});
+	}
+	
+	function includeJS (file) {
+//		var _protocol = (("https:" == document.location.protocol) ? " https://" : " http://");  
+////		document.write(unescape("%3Cscript src='" + _protocol + "localhost:8020/lib/test.js' type='text/javascript'%3E%3C/script%3E"));
+//		g.doc.write(unescape("%3Cscript src='" + file + "' type='text/javascript'%3E%3C/script%3E"));
+		   var el = g.doc.createElement('script');
+		   el.src = file;
+		   el.type = 'text/javascript';
+		   el.addEventListener("load", testLoadJs, false);  
+		   var head = g.doc.getElementsByTagName('head')[0];
+		   head.appendChild(el);
+	}
+	
+	function testLoadJs(){
+		debugger;
+		var tmpEl = g.doc.getElementById("c_txt");
+		tmpEl.value="window.onload is called";
+		//tmpEl.attachEvent("onclick",test_func2,false);
+		tmpEl.addEventListener("click",test_func3,false);
+	}
+
+
+	g.win.Dalisi = D;
+})(window);
+
+
+
+
+</script>
+<title>将弹出式窗口的资料输入到主窗口中</title>
+<script language="javascript">
+<!--
+function openUrl(){
+	debugger;
+	var retObj = window.showModalDialog("b.html",window,"width=300,height=200");
+	if(retObj!=null){
+		document.getElementById('txt').value =retObj;
+	}
+}
+//-->
+</script>
+</head>
+<body>
+接受弹出式窗口的资料
+<input onclick="openUrl()" type="text" id="txt">
+<br>
+<input type="text" id="txt2">
+<br>
+<iframe id="c_html" src="c.html" frameborder="1" scrolling="no" ></iframe>
+</body>
+</html>

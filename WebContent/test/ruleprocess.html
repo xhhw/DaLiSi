@@ -1,0 +1,97 @@
+<html>
+<head>
+<link rel="stylesheet" href="css/demo.css" type="text/css"
+	media="screen">
+<link rel="stylesheet" href="css/demo-print.css" type="text/css"
+	media="print">
+<script type="text/javascript" src="lib/raphael.js" charset="utf-8"></script>
+<script type="text/javascript" src="lib/ruleprocess.js" charset="utf-8"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+</head>
+<body>
+	<p>this is a test about raphael.js</p>
+	<table border="1" align="center" width="95%" cellpadding="0" cellspacing="0">
+		<tr>
+			<td colspan="2">
+			<input type="button" id="commit" value="保存" onclick="onSaveProcess()" />
+			<input type="button" id="clear" value="清空" onclick="onRemoveProcess()" />
+			<!-- 
+	<input type="button" id="drawline1" value="画线" onclick="onDrawLineBegin()" />
+	<input type="button" id="drawline2" value="画线完毕" onclick="onDrawLineEnd()" />
+	 -->
+			</td>
+		</tr>
+		<tr>
+			<td width="40%" ><textarea id="xmlview"  name="xmlview" style="width:100%" rows="31"></textarea></td>
+			<td height="480px"><div id="processholder"></div></td>
+		</tr>
+	</table>
+	
+</body>
+<script type="text/javascript" charset="GBK">
+var doc;
+//var doc = new loadXML("ruleprocess_demo.xml");
+//var doc1 = new loadXML("ruleprocess_demo.xml");
+//alert(doc1.xml);
+
+function printXML(document){
+	if(window.XMLSerializer)
+	{
+		/* var ns = new XmlSerializerNamespaces (); */
+		var serializer = new XMLSerializer();
+		var xmlString = serializer.serializeToString(document);
+		window.document.getElementById("xmlview").innerHTML=xmlString;
+	}
+}
+
+//创建一个dom对象
+function xml(str){
+	if(window.DOMParser)//firefox内核的浏览器
+	{
+		var p = new DOMParser();
+		return p.parseFromString( str, "text/xml" );
+	}
+	else if( window.ActiveXObject )//ie内核的浏览器
+	{
+		var doc = new ActiveXObject( "Msxml2.DOMDocument" );
+		doc.loadXML(str);
+		return doc;
+	}
+	else
+		return false;
+}
+//加载xml文档
+function loadXML(xmlFile)
+{
+    var xmlDoc;
+    if(window.ActiveXObject)
+    {
+        xmlDoc    = new ActiveXObject('Microsoft.XMLDOM');
+        xmlDoc.async    = false;
+        xmlDoc.load(xmlFile);
+    }
+    else if (document.implementation&&document.implementation.createDocument)
+    {
+        xmlDoc    = document.implementation.createDocument('', '', null);
+        xmlDoc.async=false;
+        xmlDoc.load(xmlFile);
+    }
+    else
+    {
+        return null;
+    }
+    
+    return xmlDoc;
+}
+function testIE(){
+	if(!!document.all)
+	{
+		alert('当前浏览器为IE,IE兼容');
+	}
+	else
+	{
+		alert('当前浏览器为FireFox,FireFox兼容');
+	}
+}
+</script>
+</html>

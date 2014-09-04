@@ -1,0 +1,84 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<script type="text/javascript" src="lib/xml2json.js" charset="utf-8"></script>
+<!-- 
+<script type="text/javascript" src="lib/dalisi.js" charset="utf-8"></script>
+<-->
+</head>
+<body>
+	<p align="center">this is a test about rule engine</p>
+	<table border="1" align="center" width="80%" cellpadding="0" cellspacing="0">
+		<tr><td> 应用编号: <input id="app" value="10000001" type="text"/></td></tr>
+        <tr><td> 场景编号: <input id="scene" value="10000001" type="text"/></td></tr>
+        <tr><td> 事件编号: <input id="event" value="20000001" type="text"/></td></tr>
+        <tr><td> 对象编号: <input id="eventobj" style="width:500px;" value="30000001" type="text"/>事件操作对象编号（多个用,号间隔）</td></tr>
+		<tr><td><input type="button" id="test" value="测试" onclick="onCheck()" /></td></tr>
+		<tr><td> 测试结果:</td></tr>
+		<tr>
+			<td width="40%" ><textarea id="xmlview"  name="xmlview" style="width:100%" rows="31"></textarea></td>
+		</tr>
+	</table>
+	<iframe id="graffle" src="graffle.html" width="450" height="400" frameborder="0" scrolling="no"> 
+		<a href="graffle.html">你的浏览器不支持iframe页面嵌套，请点击这里访问页面内容。</a>
+	</iframe> 
+</body>
+<script type="text/javascript" charset="GBK">
+window.onload = function () {
+	debugger;
+	var url = this.location.href;
+}
+function printXML(xmldoc){
+	if(window.XMLSerializer)
+	{
+		var serializer = new XMLSerializer();
+		var xmlString = serializer.serializeToString(xmldoc,"text/xml");
+		xmlString = formatXml(xmlString);
+		window.document.getElementById("xmlview").innerHTML=xmlString;
+	}
+}
+function onCheck(){
+	debugger;
+	var request = new XMLHttpRequest();
+	request.open("POST","http://localhost:8020/rule");
+	request.onreadystatechange = function(){
+		if(request.readyState === 4 && request.status === 200){
+			var type = request.getResponseHeader("Content-Type");
+			if (type.indexOf("xml") !== -1 && request.responseXML){
+				debugger;
+				printXML(request.responseXML);
+			}
+			else if (type === "application/json"){
+				alert(JSON.parse(request.responseText));
+			}
+			else {
+				alert(request.responseText);
+			}
+		}
+	};
+	//request.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+	//request.send("appId=10000001&sceneId=10000001&eventId=20000001&dataId=30000001");
+	var appId = window.document.getElementById("app").value;
+	var sceneId = window.document.getElementById("scene").value;
+	var eventId = window.document.getElementById("event").value;
+	var strDataId = window.document.getElementById("eventobj").value;
+	var datas = strDataId.split(',');
+	
+	var doc = document.implementation.createDocument("","rule-process",null);
+	var root = doc.documentElement;
+	var ruleNode = doc.createElement("rule");
+	ruleNode.setAttribute("appId", appId);
+	ruleNode.setAttribute("sceneId", sceneId);
+	ruleNode.setAttribute("eventId", eventId);
+	root.appendChild(ruleNode);
+	for (var i = datas.length; i--; ) {
+        var dataId = datas[i];
+        var ruleDataNode = doc.createElement("ruledata");
+    	ruleDataNode.setAttribute("dataId", dataId);
+    	ruleNode.appendChild(ruleDataNode);
+    }
+	request.send(doc);
+}
+</script>
+</html>
+

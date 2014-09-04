@@ -1,0 +1,19 @@
+<html>
+<head>
+<title>将弹出式窗口的资料输入到主窗口中</title>
+<script language="javascript">
+<!--
+	function out(){
+		opener.txt.value = txt.value;
+	}
+	window.onunload = function(){
+		opener.txt.value = '子窗口已经关闭了！';	
+	}
+//-->
+</script>
+</head>
+<body>
+<input id="txt" type="text">
+<input type="button" value="输出" onClick="out()">
+</body>
+</html>

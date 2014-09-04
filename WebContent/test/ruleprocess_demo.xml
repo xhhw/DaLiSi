@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rule-process id="test_id" version="1.0">
+	<node id="1" type="start">
+	    <uiinfo>256,233,138,25</uiinfo>
+		<node-next goto="2"/>
+	</node>
+	<node id="2" type="rule" label="用户余额大于0">
+	    <uiinfo>256,233,138,25</uiinfo>
+		<node-next goto="3"/>
+		<rule id="10000001"/>
+	</node>
+	<node id="3" type="check">
+	    <uiinfo>256,233,138,25</uiinfo>
+		<node-next goto="4" value="true"/>
+		<node-next goto="5" value="false"/>
+	</node>
+	<node id="4" type="rule" label="用户当前无GPRS策划">
+	    <uiinfo>256,233,138,25</uiinfo>
+		<node-next goto="6"/>
+		<rule id="10000002"/>
+	</node>
+	<node id="5" type="end">
+	    <uiinfo>256,233,138,25</uiinfo>
+	</node>
+	<node id="6" type="end">
+	    <uiinfo>256,233,138,25</uiinfo>
+	</node>
+	<join from="1" to="2">
+    	<uiinfo>10.0,10.0,500,500,322,56,322,92</uiinfo>
+  	</join>
+  	<join from="2" to="3">
+    	<uiinfo>10.0,10.0,500,500,322,56,322,92</uiinfo>
+  	</join>
+  	<join from="3" to="4">
+    	<uiinfo>10.0,10.0,500,500,322,56,322,92</uiinfo>
+  	</join>
+  	<join from="3" to="5">
+    	<uiinfo>10.0,10.0,500,500,322,56,322,92</uiinfo>
+  	</join>
+  	<join from="4" to="6">
+    	<uiinfo>10.0,10.0,500,500,322,56,322,92</uiinfo>
+  	</join>
+</rule-process>

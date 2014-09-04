@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="gb2312"?>
+<web-config>
+	<transaction autocommit="false" flag="0">
+		<session-class name="com.zb.dalisi.common.SessionContext" />
+	</transaction>
+	<datasource>
+		<pool name="dalisi" primary="true">
+		    <property name="driver" value="com.mysql.jdbc.Driver" />
+			<property name="url" value="jdbc:mysql://localhost:3306/dalisi?useUnicode=true&amp;characterEncoding=utf-8" />
+			<property name="username" value="root" />
+			<property name="password" value="" />
+			<property name="initialSize" value="0" />
+			<property name="maxActive" value="2" />
+			<property name="maxIdle" value="2" />
+		</pool>
+	</datasource>
+	<caches implclass="com.zb.dalisi.frame.cache.DefaultCacheEngine">
+	    <cache name="com.zb.dalisi.cache.CacheAttr" version="1.0" />
+	    <cache name="com.zb.dalisi.cache.CacheEvent" version="1.0" />
+	    <cache name="com.zb.dalisi.cache.CacheFunction" version="1.0" />
+	</caches>
+</web-config>
